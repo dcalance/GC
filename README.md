@@ -1,3 +1,3 @@
 # Computer Graphics (OpenGL)
-IDE used Visual Studio  
+IDE used : Visual Studio  
 Language : C++
