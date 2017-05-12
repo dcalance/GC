@@ -9,10 +9,16 @@ struct Point
 
 void drawPoint(Point p)
 {
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+	glTranslatef(p.x, p.y, 0);
+
 	glBegin(GL_POINTS);
 	glColor3f(0.95f, 0.207, 0.031f);
-	glVertex3f(p.x, p.y, 0.0f);
+	glVertex3f(0, 0, 0.0f);
 	glEnd();
+	glPopMatrix();
 }
 
 void drawTriangle(Point p1, Point p2, Point p3) 
@@ -78,6 +84,10 @@ void draw()
 	p2.x = -4; p2.y = 0;
 	drawLine(p1, p2, 0.1f);
 	p1.x = 0; p1.y = 0;
+	drawPoint(p1);
+	p1.x = 0.1; p1.y = 0;
+	drawPoint(p1);
+	p1.x = 0.2; p1.y = 0;
 	drawPoint(p1);
 	glutSwapBuffers();
 }
