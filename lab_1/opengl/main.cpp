@@ -76,13 +76,13 @@ void draw()
 	Point p1, p2;
 	p1.x = -4; p1.y = 0;
 	p2.x = 4; p2.y = 0;
-	drawLine(p1, p2, 0.1f);
+	drawLine(p1, p2, 0.2f);
 	p1.x = 4; p1.y = 0;
 	p2.x = 0; p2.y = 4;
-	drawLine(p1, p2, 0.1f);
+	drawLine(p1, p2, 0.2f);
 	p1.x = 0; p1.y = 4;
 	p2.x = -4; p2.y = 0;
-	drawLine(p1, p2, 0.1f);
+	drawLine(p1, p2, 0.2f);
 	p1.x = 0; p1.y = 0;
 	drawPoint(p1);
 	p1.x = 0.1; p1.y = 0;
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 640);
-	glutCreateWindow("Lighthouse3D - GLUT Tutorial");
+	glutCreateWindow("OpenGL window");
 
 	// register callbacks
 	glutDisplayFunc(draw);

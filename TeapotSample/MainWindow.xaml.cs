@@ -35,7 +35,7 @@ namespace Example1
         private void OpenGLControl_OpenGLDraw(object sender, OpenGLEventArgs args)
         {
             //gl = args.OpenGL;	
-            
+
             // Clear The Screen And The Depth Buffer
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
@@ -46,28 +46,29 @@ namespace Example1
             POINTFLOAT p2 = new POINTFLOAT { x = 2.0f, y = -2.0f };
             POINTFLOAT p3 = new POINTFLOAT { x = 2.0f, y = -2.0f };
 
-            Point3 d1 = new Point3 { x = 0.0f, y = 0.0f, z = 0.0f };
+            Point3 d1 = new Point3 { x = 0.0f, y = 2.0f, z = 0.0f };
             Point3 d2 = new Point3 { x = 2.0f, y = 1.0f, z = 2.0f };
 
-            //gl.Rotate(rotation, 0.0f, 1.0f, 0.0f);
-            //gl.Rotate(10f, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(rotation, 0.0f, 1.0f, 0.0f);
+            gl.Rotate(rotationY, 1.0f, 0.0f, 0.0f);
+            gl.Rotate(10f, 1.0f, 0.0f, 0.0f);
             //DrawTriangle(p1, p2, p3);
             //DrawRect(p1, p2);
             //DrawCircle(p1, 2.0f, 10);
-            //DrawCube(d1, d2);
+            //DrawPrism(d1, 4, 1, 5);
+            DrawCylinder(d1, 4, 5, 20);
             DrawPointTest(0.0f, 0.0f, 0.0f);
-            DrawPointTest(4.0f, 0.0f, 0.0f);
-            DrawPointTest(5.0f, 0.0f, 0.0f);
+            //DrawPointTest(4.0f, 0.0f, 0.0f);
+            //DrawPointTest(5.0f, 0.0f, 0.0f);
 
             Teapot tp = new Teapot();
             //tp.Draw(gl, 14, 1, OpenGL.GL_FILL);
-
+            gl.PopMatrix();
 
         }
         private void DrawPointTest(float x, float y, float z)
         {
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
-            gl.LoadIdentity();
             gl.PushMatrix();
             gl.Translate(x, y, z);
 
@@ -77,11 +78,10 @@ namespace Example1
             gl.End();
 
             gl.PopMatrix();
-            
+
         }
         private void DrawTriangle(POINTFLOAT p1, POINTFLOAT p2, POINTFLOAT p3)
         {
-            
             gl.Begin(OpenGL.GL_TRIANGLES);
             gl.Color(1.0f, 0.0f, 0.0f);
             gl.Vertex(p1.x, p1.y);
@@ -94,8 +94,8 @@ namespace Example1
 
         private void DrawRect(POINTFLOAT p1, POINTFLOAT p4)
         {
-            POINTFLOAT p2 = new POINTFLOAT { x = p1.x, y = p4.y};
-            POINTFLOAT p3 = new POINTFLOAT { x = p4.x, y = p1.y};
+            POINTFLOAT p2 = new POINTFLOAT { x = p1.x, y = p4.y };
+            POINTFLOAT p3 = new POINTFLOAT { x = p4.x, y = p1.y };
             DrawTriangle(p3, p1, p2);
             DrawTriangle(p3, p4, p2);
         }
@@ -109,49 +109,77 @@ namespace Example1
                 DrawTriangle(center, p2, p3);
             }
         }
-
-        private void DrawCube(Point3 D1, Point3 D2)
+        private void DrawCylinder(Point3 center, float height, float radius, int transtelation)
         {
-            gl.MatrixMode(OpenGL.GL_PROJECTION);
-            gl.LoadIdentity();
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.PushMatrix();
-            gl.Translate(0, 0, 0);
-            D2.x = Math.Abs(D2.x - D1.x);
-            D2.y = Math.Abs(D2.y - D1.y);
-            D2.z = Math.Abs(D2.z - D1.z);
+            //gl.Translate(center.x, center.y - height, center.z + radius);
+
+            float division = 2 * (float)Math.PI / transtelation;
+            POINTFLOAT p2 = new POINTFLOAT { x = radius * (float)Math.Cos(division * 1), y = radius * (float)Math.Sin(division * 1) };
+            POINTFLOAT p3 = new POINTFLOAT { x = radius * (float)Math.Cos(division * 2), y = radius * (float)Math.Sin(division * 2) };
+            float dotProd = p2.x * p3.x + p2.y * p3.y;
+            float magnProd = (float)Math.Sqrt(p2.x * p2.x + p2.y * p2.y) * (float)Math.Sqrt(p3.x * p3.x + p3.y * p3.y);
+            float angle = (float)Math.Acos(dotProd / magnProd);
+            p3 = new POINTFLOAT { x = (float)Math.Sqrt((float)Math.Pow(p2.x - p3.x, 2) + (float)Math.Pow(p2.y - p3.y, 2)), y = height };
+            p2 = new POINTFLOAT { x = 0, y = 0 };
+
+            for (int i = 0; i < transtelation; i++)
+            {
+                DrawRect(p2, p3);
+                gl.Translate(p3.x, 0, 0);
+                gl.Rotate(angle * 180 / Math.PI, 0, 1, 0);
+            }
+            gl.PopMatrix();
+            gl.PushMatrix();
+
+            POINTFLOAT center1 = new POINTFLOAT { x = center.x, y = center.y };
+            gl.Rotate(90, 1.0f, 0.0f, 0.0f);
+            gl.Translate(0.0f, - radius, 0.0f);
+            DrawPointTest(0, 0, 0);
+            DrawCircle(center1, radius, transtelation);
+
+            gl.PopMatrix();
+        }
+        private void DrawPrism(Point3 center, float sizeX, float sizeY, float sizeZ)
+        {
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
+            gl.PushMatrix();
+            gl.Translate(center.x - sizeX / 2, center.y - sizeY / 2, center.z - sizeZ / 2);
+
             POINTFLOAT p1 = new POINTFLOAT { x = 0, y = 0 };
-            POINTFLOAT p2 = new POINTFLOAT { x = D2.x, y = D2.y };
-            float transalteValY = (float)Math.Sqrt(0 + D2.y * D2.y);
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    DrawRect(p1, p2);
-            //    gl.Rotate(90f, 1.0f, 0.0f, 0.0f);
-            //    //gl.Translate(0.0f, transalteValY, 0.0f);
-            //}
+            POINTFLOAT p2 = new POINTFLOAT { x = sizeX, y = sizeY };
             DrawRect(p1, p2);
-            //gl.Rotate(90f, 1.0f, 0.0f, 0.0f);
-            //p1 = new POINTFLOAT { x = 0, y = 0 };
-            //p2 = new POINTFLOAT { x = D2.x, y = D2.z };
-            //DrawRect(p1, p2);
-            //gl.Translate(0.0f, (float)Math.Sqrt(0 + D2.z * D2.z), 0.0f);
-            //gl.Rotate(-90f, 1.0f, 0.0f, 0.0f);
-            //p1 = new POINTFLOAT { x = 0, y = 0 };
-            //p2 = new POINTFLOAT { x = D2.x, y = D2.y };
-            //DrawRect(p1, p2);
-            //gl.Translate(0.0f, (float)Math.Sqrt(0 + D2.y * D2.y), 0.0f);
-            //gl.Rotate(-90f, 1.0f, 0.0f, 0.0f);
-            //p1 = new POINTFLOAT { x = 0, y = 0 };
-            //p2 = new POINTFLOAT { x = D2.x, y = D2.z };
-            //DrawRect(p1, p2);
-            //gl.Translate(0.0f, -(float)Math.Sqrt(0 + D2.z * D2.z), 0.0f);
-            //gl.Rotate(-90f, 1.0f, 0.0f, 0.0f);
-            //p1 = new POINTFLOAT { x = 0, y = 0 };
-            //DrawCircle(p1, 2, 40);
+            gl.Translate(0.0f, sizeY, 0.0f);
+            gl.Rotate(90f, 1.0f, 0.0f, 0.0f);
+            p1 = new POINTFLOAT { x = 0, y = 0 };
+            p2 = new POINTFLOAT { x = sizeX, y = sizeZ };
+            DrawRect(p1, p2);
+            gl.Translate(0.0f, sizeZ, 0.0f);
+            gl.Rotate(90f, 1.0f, 0.0f, 0.0f);
+            p1 = new POINTFLOAT { x = 0, y = 0 };
+            p2 = new POINTFLOAT { x = sizeX, y = sizeY };
+            DrawRect(p1, p2);
+            gl.Translate(0.0f, sizeY, 0.0f);
+            gl.Rotate(90f, 1.0f, 0.0f, 0.0f);
+            p1 = new POINTFLOAT { x = 0, y = 0 };
+            p2 = new POINTFLOAT { x = sizeX, y = sizeZ };
+            DrawRect(p1, p2);
+            gl.Translate(0.0f, sizeZ, 0.0f);
+            gl.Rotate(90f, 1.0f, 0.0f, 0.0f);
+
+            gl.Rotate(-90f, 0.0f, 1.0f, 0.0f);
+            p1 = new POINTFLOAT { x = 0, y = 0 };
+            p2 = new POINTFLOAT { x = sizeZ, y = sizeY };
+            DrawRect(p1, p2);
+            gl.Translate(0.0f, 0.0f, -sizeX);
+            DrawRect(p1, p2);
             gl.PopMatrix();
 
         }
 
         float rotation = 0;
+        float rotationY = 0;
 
         private void OpenGLControl_OpenGLInitialized(object sender, OpenGLEventArgs args)
         {
@@ -180,12 +208,17 @@ namespace Example1
             //gl.Enable(OpenGL.GL_LIGHT0);
 
             //gl.ShadeModel(OpenGL.GL_SMOOTH);
-            args.OpenGL.PointSize(3.0f);
+            args.OpenGL.PointSize(6.0f);
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
             rotation += 15.0f;
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            rotationY += 15.0f;
         }
     }
 }
