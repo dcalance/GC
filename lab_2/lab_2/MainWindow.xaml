@@ -1,0 +1,39 @@
+﻿<Window x:Class="lab_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Figures" Height="600" Width="900"
+        xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <Grid>
+        <sharpGL:OpenGLControl 
+            OpenGLDraw="OpenGLControl_OpenGLDraw" OpenGLInitialized="OpenGLControl_OpenGLInitialized"
+            RenderContextType="FBO" Margin="0,0,150,0" />
+
+        <Canvas HorizontalAlignment="Left" Height="569" VerticalAlignment="Top" Width="158" Margin="734,0,0,0">
+            <ComboBox x:Name="selectBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Height="20" Canvas.Top="1">
+                <ComboBoxItem Content="Sphere"/>
+                <ComboBoxItem Content="Cone"/>
+                <ComboBoxItem Content="Cylinder"/>
+            </ComboBox>
+            <Button x:Name="btnAdd" Content="Add" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="50" Canvas.Left="100" Canvas.Top="1" Click="btnAdd_Click"/>
+            <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="150" VerticalAlignment="Top" Width="150" Canvas.Top="26" SelectionChanged="listBox_SelectionChanged"/>
+            <Button x:Name="btnDelete" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Top="181" Click="btnDelete_Click"/>
+            <ToggleButton x:Name = "btnTranslateX" Content = "TranslateX" Checked = "TranslateCheckX" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Top="231"/>
+            <ToggleButton x:Name = "btnTranslateY" Content = "TranslateY" Checked = "TranslateCheckY" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Left="50" Canvas.Top="231" />
+            <ToggleButton x:Name = "btnTranslateZ" Content = "TranslateZ" Checked = "TranslateCheckZ" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Left="100" Canvas.Top="231" />
+            <Slider x:Name="sliderTranslate" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Canvas.Top="256" ValueChanged="sliderTranslate_ValueChanged" Minimum="-5" Maximum="5"/>
+            <ToggleButton x:Name = "btnRotateX" Content = "RotateX" Checked = "RotateCheckX" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Top="286"/>
+            <ToggleButton x:Name = "btnRotateY" Content = "RotateY" Checked = "RotateCheckY" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Left="50" Canvas.Top="286" />
+            <ToggleButton x:Name = "btnRotateZ" Content = "RotateZ" Checked = "RotateCheckZ" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Left="100" Canvas.Top="286" />
+            <Slider x:Name="sliderRotate" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Canvas.Top="306" Minimum="-360" Maximum="360" ValueChanged="sliderRotate_ValueChanged"/>
+            <ToggleButton x:Name = "btnScaleX" Content = "ScaleX" Checked = "ScaleCheckX" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Top="335"/>
+            <ToggleButton x:Name = "btnScaleY" Content = "ScaleY" Checked = "ScaleCheckY" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Left="50" Canvas.Top="335" />
+            <ToggleButton x:Name = "btnScaleZ" Content = "ScaleZ" Checked = "ScaleCheckZ" Width = "50" HorizontalAlignment = "Center" FontSize="10" Canvas.Left="100" Canvas.Top="335" />
+            <Slider x:Name="sliderScale" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Canvas.Top="355" Minimum="0" Maximum="5" ValueChanged="sliderScale_ValueChanged"/>
+            <xctk:ColorPicker Name="ClrPcker" Canvas.Top="386" Width="50" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged"></xctk:ColorPicker>
+            <Slider x:Name="sliderTranstelation" Canvas.Top="541" Width="150" Maximum="40" ValueChanged="sliderTranstelation_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
+            <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="Transtelation" Width="120" Canvas.Top="513" IsEnabled="False" BorderThickness="0"/>
+            <ToggleButton x:Name="btnFrame" Content="Show Frame" Canvas.Left="-1" Canvas.Top="463" Width="76" Checked="btnFrame_Checked" Unchecked="btnFrame_Unchecked"/>
+        </Canvas>
+    </Grid>
+</Window>
